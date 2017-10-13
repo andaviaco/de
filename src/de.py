@@ -31,6 +31,12 @@ class DE(object):
         self.initialize_population()
         pp.pprint(self.population)
 
+        for ngen in range(1, self.ngenerations + 1):
+            for i_agent, agent in enumerate(self.population):
+                mutant_vector = self.mutant_vector(i_agent)
+                print('MUTANT', mutant_vector)
+
+
     def initialize_population(self):
         self.population = [self.random_agent() for i in range(self.npopulation)]
 
@@ -38,7 +44,17 @@ class DE(object):
         return self.func_eval(position)
 
     def mutant_vector(self, index_target):
-        pass
+        x1_index = self.allowed_random_index(self.npopulation, [index_target])
+        x2_index = self.allowed_random_index(self.npopulation, [index_target, x1_index])
+        x3_index = self.allowed_random_index(self.npopulation, [index_target, x1_index, x2_index])
+
+        x1_pos = self.population[x1_index].position
+        x2_pos = self.population[x2_index].position
+        x3_pos = self.population[x3_index].position
+
+        mutant_vector = x1_pos - self.dv_factor * (x2_pos  - x3_pos)
+
+        return mutant_vector
 
     def trial_vector(self, target_vector, mutant_vector):
         pass
