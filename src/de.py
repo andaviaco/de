@@ -35,9 +35,14 @@ class DE(object):
             for i_agent, agent in enumerate(self.population):
                 mutant_vector = self.mutant_vector(i_agent)
                 trial_vector = self.trial_vector(agent.position, mutant_vector)
+                best_vector = self.select_best(agent.position, trial_vector)
 
+                agent.position = best_vector
+
+                print('TARGET', agent.position)
                 print('MUTANT', mutant_vector)
                 print('TRIAL', trial_vector)
+                print('BEST', best_vector)
 
 
     def initialize_population(self):
@@ -73,7 +78,12 @@ class DE(object):
         return trial_vector
 
     def select_best(self, target_vector, trial_vector):
-        pass
+        if self.fitness(trial_vector) < self.fitness(target_vector):
+            best = trial_vector
+        else:
+            best = target_vector
+
+        return best
 
     def best_agent(self):
         pass
