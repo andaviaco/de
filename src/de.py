@@ -58,3 +58,11 @@ class DE(object):
         r = rand.random()
 
         return lb + (ub - lb) * r
+
+    def allowed_random_index(self, size, exclude=[]):
+        available_indexes = set(range(size))
+        exclude_set = set(exclude)
+        diff = available_indexes - exclude_set
+        selected = rand.choice(list(diff))
+
+        return selected
