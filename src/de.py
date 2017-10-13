@@ -1,3 +1,8 @@
+import random as rand
+import pprint as pp
+import numpy as np
+
+from agent import Agent
 
 class DE(object):
     """docstring for DE"""
@@ -17,21 +22,22 @@ class DE(object):
         self.ngenerations = ngenerations
         self.func_eval = func_eval
 
-        self.func_ub = ub
-        self.func_lb = lb
+        self.func_ub = np.array(ub)
+        self.func_lb = np.array(lb)
         self.dv_factor = dv_factor
         self.crossover_factor = crossover_factor
 
     def optimize(self):
-        pass
+        self.initialize_population()
+        pp.pprint(self.population)
 
     def initialize_population(self):
-        pass
+        self.population = [self.random_agent() for i in range(self.npopulation)]
 
     def fitness(self, position):
-        pass
+        return self.func_eval(position)
 
-    def mutant_vector(self, target):
+    def mutant_vector(self, index_target):
         pass
 
     def trial_vector(self, target_vector, mutant_vector):
@@ -43,8 +49,12 @@ class DE(object):
     def best_agent(self):
         pass
 
-    def create_agent(self):
-        pass
+    def random_agent(self):
+        position = self.random_vector(self.func_ub, self.func_lb)
+
+        return Agent(position, self.fitness(position))
 
     def random_vector(self, ub, lb):
-        pass
+        r = rand.random()
+
+        return lb + (ub - lb) * r

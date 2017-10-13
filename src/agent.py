@@ -6,3 +6,6 @@ class Agent(object):
 
         self.position = initial_position
         self.fitness = initial_fitness
+
+    def __repr__(self):
+        return f'<Agent p: {self.position} - f: {self.fitness}>'
