@@ -34,7 +34,10 @@ class DE(object):
         for ngen in range(1, self.ngenerations + 1):
             for i_agent, agent in enumerate(self.population):
                 mutant_vector = self.mutant_vector(i_agent)
+                trial_vector = self.trial_vector(agent.position, mutant_vector)
+
                 print('MUTANT', mutant_vector)
+                print('TRIAL', trial_vector)
 
 
     def initialize_population(self):
@@ -57,7 +60,17 @@ class DE(object):
         return mutant_vector
 
     def trial_vector(self, target_vector, mutant_vector):
-        pass
+        trial_vector = []
+
+        for i in range(len(target_vector)):
+            r = rand.random()
+
+            if r <= self.crossover_factor:
+                trial_vector.append(mutant_vector[i])
+            else:
+                trial_vector.append(target_vector[i])
+
+        return trial_vector
 
     def select_best(self, target_vector, trial_vector):
         pass
