@@ -1,6 +1,7 @@
 import random as rand
 import pprint as pp
 import numpy as np
+from operator import attrgetter
 
 from agent import Agent
 
@@ -39,11 +40,9 @@ class DE(object):
 
                 agent.position = best_vector
 
-                print('TARGET', agent.position)
-                print('MUTANT', mutant_vector)
-                print('TRIAL', trial_vector)
-                print('BEST', best_vector)
+        best_agent = self.best_agent()
 
+        return best_agent.position
 
     def initialize_population(self):
         self.population = [self.random_agent() for i in range(self.npopulation)]
@@ -61,6 +60,7 @@ class DE(object):
         x3_pos = self.population[x3_index].position
 
         mutant_vector = x1_pos - self.dv_factor * (x2_pos  - x3_pos)
+        mutant_vector = np.around(mutant_vector, decimals=4)
 
         return mutant_vector
 
@@ -75,6 +75,8 @@ class DE(object):
             else:
                 trial_vector.append(target_vector[i])
 
+        trial_vector = np.array(trial_vector)
+
         return trial_vector
 
     def select_best(self, target_vector, trial_vector):
@@ -86,17 +88,22 @@ class DE(object):
         return best
 
     def best_agent(self):
-        pass
+        best_agent = min(self.population, key=attrgetter('fitness'))
+
+        return best_agent
 
     def random_agent(self):
         position = self.random_vector(self.func_ub, self.func_lb)
+        position = np.around(position, decimals=4)
+        agent = Agent(position, self.fitness(position))
 
-        return Agent(position, self.fitness(position))
+        return agent
 
     def random_vector(self, ub, lb):
         r = rand.random()
+        vector = lb + (ub - lb) * r
 
-        return lb + (ub - lb) * r
+        return vector
 
     def allowed_random_index(self, size, exclude=[]):
         available_indexes = set(range(size))
