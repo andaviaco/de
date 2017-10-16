@@ -14,8 +14,8 @@ class DE(object):
         *,
         ub=(5, 5), # search-space upper boundaries
         lb=(-5, -5), # search-space lower boundaries
-        dv_factor=1, # differential variation amplification factor. Number in range [0, 2]
-        crossover_factor=0.5, # crossover constant. Number in range [0, 1]
+        dv_factor=0.8, # differential variation amplification factor. Number in range [0, 2]
+        crossover_factor=0.9, # crossover constant. Number in range [0, 1]
     ):
         super(DE, self).__init__()
 
@@ -30,7 +30,6 @@ class DE(object):
 
     def optimize(self):
         self.initialize_population()
-        pp.pprint(self.population)
 
         for ngen in range(1, self.ngenerations + 1):
             for i_agent, agent in enumerate(self.population):
