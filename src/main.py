@@ -1,29 +1,57 @@
+import numpy as np
+from numpy import linalg as LA
+import pprint as pp
+
 import lib
 from de import DE
 
+def tranform(original_position, transition):
+    dx, dy, theta = transition
+    a, b, c = original_position
+
+    t = np.array([dx, dy])
+    r = np.array([
+        [np.cos(theta), -np.sin(theta)],
+        [np.sin(theta), np.cos(theta)],
+    ])
+
+    ap = r @ np.array(a) + t
+    bp = r @ np.array(b) + t
+    cp = r @ np.array(c) + t
+
+    return (ap, bp, cp)
+
+# x=[
+#  dx, => posición en x del individuo
+#  dy, => posición en y del individuo
+#  theta, => rotación
+# ]
+# fitness: lower is better
+def fitness(a, b, c, da, db, dc):
+    def fn(x):
+        ap, bp, cp = tranform([a, b, c], x)
+
+        return LA.norm(da - ap) + LA.norm(db - bp) + LA.norm(dc - cp)
+    return fn
 
 def main():
-    de_sphere = DE(50, 100, lib.sphere, lb=[-5, -5], ub=[5, 5])
-    de_ackley = DE(50, 100, lib.ackley, lb=[-20, -20], ub=[20, 20])
-    de_rastrigin = DE(50, 100, lib.rastrigin, lb=[-5, -5], ub=[5, 5])
+    position = []
+    projection = []
 
-    min_x, min_y = de_sphere.optimize()
-    eval_result = lib.sphere([min_x, min_y])
+    with open('./pose_actual.txt', 'r') as f:
+        for line in f:
+            position.append(np.array([float(val) for val in line.split()]))
 
-    print(f'Sphere MIN: x={min_x}, y={min_y}')
-    print(f'Sphere({min_x}, {min_y}) = {round(eval_result, 4)}')
+    with open('./pose_deseada.txt', 'r') as f:
+        for line in f:
+            projection.append(np.array([float(val) for val in line.split()]))
 
-    min_x, min_y = de_rastrigin.optimize()
-    eval_result = lib.rastrigin([min_x, min_y])
+    de = DE(100, 100, fitness(*position, *projection), lb=[-5, -5, 0], ub=[5, 5, 2 * np.pi])
+    result = de.optimize()
+    transformed_result = tranform(position, result)
 
-    print(f'Rastrigin MIN: x={min_x}, y={min_y}')
-    print(f'Rastrigin({min_x}, {min_y}) = {round(eval_result, 4)}')
-
-    min_x, min_y = de_ackley.optimize()
-    eval_result = lib.ackley([min_x, min_y])
-
-    print(f'Ackley MIN: x={min_x}, y={min_y}')
-    print(f'Ackley({min_x}, {min_y}) = {round(eval_result, 4)}')
+    print(result)
+    pp.pprint(transformed_result)
 
 if __name__ == '__main__':
     main()
