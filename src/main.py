@@ -1,5 +1,5 @@
 import numpy as np
-
+import math
 import lib
 
 from de import DE
@@ -8,8 +8,13 @@ def yc(a, b, xi):
     return a * np.sin(2 * np.pi * xi * b)
 
 def fitness(x, y):
-    def fn(a, b):
-        f_sum = np.sum([np.sqrt(y[i] - yc(a, b, x[i])) for i in range(len(x))])
+    n = len(x)
+
+    def fn(vec_x):
+        a, b = vec_x
+
+        f_sum = np.sum([(y[i] - yc(a, b, x[i])) ** 2 for i in range(n)])
+        result = math.sqrt(f_sum / n)
 
         return f_sum
 
@@ -24,10 +29,12 @@ def main():
 
     sample_x, sample_y = zip(*sample)
 
-    a = fitness(sample_x, sample_y)(0, 0)
-    print(a)
-    # de = DE(50, 100, fitness(sample_x, sample_y), lb=[0, 0], ub=[0, np.pi * 2])
-    # de.optimize()
+    # a = fitness(sample_x, sample_y)(0, 0)
+    # print(a)
+    de = DE(100, 100, fitness(sample_x, sample_y), lb=[0, 0], ub=[10, np.pi * 2])
+    result = de.optimize()
+
+    print('RESULT', result)
 
     # de_sphere = DE(50, 100, lib.sphere, lb=[-5, -5], ub=[5, 5])
     # de_ackley = DE(50, 100, lib.ackley, lb=[-20, -20], ub=[20, 20])
