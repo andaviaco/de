@@ -3,7 +3,7 @@ import pprint as pp
 import numpy as np
 from operator import attrgetter
 
-from agent import Agent
+from .agent import Agent
 
 class DE(object):
     """docstring for DE"""
