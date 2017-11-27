@@ -47,7 +47,7 @@ class DE(object):
         self.population = [self.random_agent() for i in range(self.npopulation)]
 
     def fitness(self, position):
-        return self.func_eval(position)
+        return 1 / (1 + self.func_eval(position))
 
     def mutant_vector(self, index_target):
         x1_index = self.allowed_random_index(self.npopulation, [index_target])
@@ -79,7 +79,7 @@ class DE(object):
         return trial_vector
 
     def select_best(self, target_vector, trial_vector):
-        if self.fitness(trial_vector) < self.fitness(target_vector):
+        if self.fitness(trial_vector) > self.fitness(target_vector):
             best = trial_vector
         else:
             best = target_vector
@@ -87,7 +87,7 @@ class DE(object):
         return best
 
     def best_agent(self):
-        best_agent = min(self.population, key=attrgetter('fitness'))
+        best_agent = max(self.population, key=attrgetter('fitness'))
 
         return best_agent
 
