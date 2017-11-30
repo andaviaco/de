@@ -12,6 +12,7 @@ class DE(object):
         ngenerations,
         func_eval,
         *,
+        optimization="min",
         ub=(5, 5), # search-space upper boundaries
         lb=(-5, -5), # search-space lower boundaries
         dv_factor=0.8, # differential variation amplification factor. Number in range [0, 2]
@@ -27,6 +28,12 @@ class DE(object):
         self.func_lb = np.array(lb)
         self.dv_factor = dv_factor
         self.crossover_factor = crossover_factor
+
+        if (optimization == 'max'):
+            self.fitness = self.max_fitness
+        else:
+            self.fitness = self.min_fitness
+
 
     def optimize(self):
         self.initialize_population()
@@ -46,8 +53,11 @@ class DE(object):
     def initialize_population(self):
         self.population = [self.random_agent() for i in range(self.npopulation)]
 
-    def fitness(self, position):
+    def min_fitness(self, position):
         return 1 / (1 + self.func_eval(position))
+
+    def max_fitness(self, position):
+        return self.func_eval(position)
 
     def mutant_vector(self, index_target):
         x1_index = self.allowed_random_index(self.npopulation, [index_target])
