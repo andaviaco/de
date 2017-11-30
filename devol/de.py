@@ -112,7 +112,7 @@ class DE(object):
         return agent
 
     def random_vector(self, ub, lb):
-        r = rand.random()
+        r = [rand.random() for i in ub]
         vector = lb + (ub - lb) * r
 
         return vector
