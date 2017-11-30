@@ -1,5 +1,6 @@
-import .lib
-from .de import DE
+from devol import DE
+
+import lib
 
 
 def main():
