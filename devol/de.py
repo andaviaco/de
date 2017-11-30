@@ -74,9 +74,22 @@ class DE(object):
             else:
                 trial_vector.append(target_vector[i])
 
+        trial_vector = self.penalty(trial_vector)
         trial_vector = np.array(trial_vector)
 
         return trial_vector
+
+    def penalty(self, position):
+        vector = position
+        ub = self.func_ub
+        lb = self.func_lb
+
+        for i, p in enumerate(vector):
+            if p < lb[i] or p > ub[i]:
+                vector[i] = self.random_vector(np.array([ub[i]]), np.array([lb[i]]))[0]
+
+        return vector
+
 
     def select_best(self, target_vector, trial_vector):
         if self.fitness(trial_vector) > self.fitness(target_vector):
